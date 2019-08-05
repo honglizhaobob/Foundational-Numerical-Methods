@@ -1,0 +1,30 @@
+Q9b_code
+approximated_root
+
+approximated_root =
+
+     0
+
+history
+
+history =
+
+    -1
+     1
+     0
+
+abs_error = 0 - approximated_root
+
+abs_error =
+
+     0
+
+rel_error = 0
+
+rel_error =
+
+     0
+
+% by counting the columns of the history matrix (namely, number of iterations)
+% the function only took one step to find the correct root
+diary off
