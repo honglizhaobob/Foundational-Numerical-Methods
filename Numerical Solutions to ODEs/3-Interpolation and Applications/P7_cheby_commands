@@ -1,0 +1,94 @@
+% This is using n=3, 5, 9, 17, 33 with cheby points
+%(1) Tabulate maximum error over 1000 random points
+% first we generate the points using generate_1000 on interval [0,5]
+rand_pnts = generate_1000([0 5]);
+clear
+rand_pnts = generate_1000([0 5]);
+% then we interpolate using interpolate.m, n = 3, points are equidistant, f is original function
+coeff1 = interpolate(3, @cheby_points, @original_function);
+% thus we can use interpolation_error.m to compute the first error1, store it in a vector Max_Errors
+Max_Errors = [];
+error1 = interpolation_error(rand_pnts, coeff1);
+Max_Errors = [Max_Errors, error1];
+
+
+% Repeat process for 5,9,17,33
+coeff2 = interpolate(5, @cheby_points, @original_function);
+error2 = interpolation_error(rand_pnts, coeff2);
+Max_Errors = [Max_Errors, error2];
+% n = 9
+coeff3 = interpolate(9, @cheby_points, @original_function);
+error3 = interpolation_error(rand_pnts, coeff3);
+Max_Errors = [Max_Errors, error3];
+
+% n = 17
+coeff4 = interpolate(17, @cheby_points, @original_function);
+[Warning: Polynomial is badly conditioned. Add points with distinct X values, reduce the degree
+of the polynomial, or try centering and scaling as described in HELP POLYFIT.] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('polyfit', '/Applications/MATLAB_R2018b.app/toolbox/matlab/polyfun/polyfit.m', 79)" style="font-weight:bold">polyfit</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2018b.app/toolbox/matlab/polyfun/polyfit.m',79,0)">line 79</a>)
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('interpolate', '/Users/bobjohnson/Documents/MATLAB/MATH 128A Functions/128A HW3/HW04/interpolate.m', 9)" style="font-weight:bold">interpolate</a> (<a href="matlab: opentoline('/Users/bobjohnson/Documents/MATLAB/MATH 128A Functions/128A HW3/HW04/interpolate.m',9,0)">line 9</a>)] 
+error4 = interpolation_error(rand_pnts, coeff4);
+Max_Errors = [Max_Errors, error4];
+
+% n = 33
+coeff5 = interpolate(33, @cheby_points, @original_function);
+[Warning: Polynomial is badly conditioned. Add points with distinct X values, reduce the degree
+of the polynomial, or try centering and scaling as described in HELP POLYFIT.] 
+[> In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('polyfit', '/Applications/MATLAB_R2018b.app/toolbox/matlab/polyfun/polyfit.m', 79)" style="font-weight:bold">polyfit</a> (<a href="matlab: opentoline('/Applications/MATLAB_R2018b.app/toolbox/matlab/polyfun/polyfit.m',79,0)">line 79</a>)
+  In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('interpolate', '/Users/bobjohnson/Documents/MATLAB/MATH 128A Functions/128A HW3/HW04/interpolate.m', 9)" style="font-weight:bold">interpolate</a> (<a href="matlab: opentoline('/Users/bobjohnson/Documents/MATLAB/MATH 128A Functions/128A HW3/HW04/interpolate.m',9,0)">line 9</a>)] 
+error5 = interpolation_error(rand_pnts, coeff5);
+Max_Errors = [Max_Errors, error5];
+
+% Then tabulate
+n = [3 5 9 17 33];
+Points = n';
+Max_Errors = Max_Errors';
+T = table(Points, Max_Errors);
+T
+
+T =
+
+  5×2 <a href="matlab:helpPopup table" style="font-weight:bold">table</a>
+
+    <strong>Points</strong>         <strong>Max_Errors</strong>     
+    <strong>______</strong>    <strong>____________________</strong>
+
+       3         0.599544250334417
+       5         0.263713820982568
+       9        0.0328408308746303
+      17      0.000275154773905106
+      33        0.0291864101893771
+
+diary off
+
+% then we analyze the plot
+x = [0:5/1000:5];
+w1 = omega_x(x, @cheby_points, 3);
+w2 = omega_x(x, @cheby_points, 5);
+w3 = omega_x(x, @cheby_points, 9);
+w4 = omega_x(x, @cheby_points, 17);
+w5 = omega_x(x, @cheby_points, 33);
+plot(x,w1,x,w2,x,w3,x,w4)
+grid on
+xlabel('x')
+ylabel('w(x)')
+title('Line plot of w(x) with different chebyshev points, in interval [0,5]')
+x = [-1:7/1000:6];
+w_1 = omega_x(x, @cheby_points, 3);
+w_2 = omega_x(x, @cheby_points, 5);
+w_3 = omega_x(x, @cheby_points, 9);
+w_4 = omega_x(x, @cheby_points, 17);
+w_5 = omega_x(x, @cheby_points, 33);
+plot(x,w_1,x,w_2,x,w_3,x,w_4)
+grid on
+xlabel('x')
+ylabel('New ln(w)')
+title('Line plot of new ln(w) with chebyshev interpolation points, in interval [-1,6]')
+
+
+
+
+% it is observed that chebyshev nodes lead to equioscillating errors (it distributes errors evenly on the whole interval)
+% however, error starts to become very large once we are outside of the [0,5] interval, where we performed the interpolation
+% namely [-1,0] and [5,6] have large errors, as shown
+diary off

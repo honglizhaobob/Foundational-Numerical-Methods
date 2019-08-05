@@ -1,0 +1,50 @@
+% using n = 3,5,9,17,33
+% interpolate at n's, and record the coeffients
+coeff1 = exponential_interpolation(3);
+coeff2 = exponential_interpolation(5);
+coeff3 = exponential_interpolation(9);
+coeff4 = exponential_interpolation(17);
+coeff5 = exponential_interpolation(33);
+>> 
+>> % as there are different numbers of points, we create different lambda arrays
+>> k = 0:1:3;
+>> lambda1 = -k ./ 3;
+>> k = 0:1:5;
+>> lambda2 = -k ./ 5;
+>> k = 0:1:9;
+>> lambda3 = -k ./ 9;
+>> k = 0:1:17;
+>> lambda4 = -k ./ 17;
+>> k = 0:1:33;
+>> lambda5 = -k ./ 33;
+
+% we calculate the error at x = 3.12 (a reasonable value for this interval)
+x = 3.12;
+a1 =coeff1 * (exp(1) .^ ((lambda1) .* x))';
+a2 =coeff2 * (exp(1) .^ ((lambda2) .* x))';
+a3 =coeff3 * (exp(1) .^ ((lambda3) .* x))';
+a4 =coeff4 * (exp(1) .^ ((lambda4) .* x))';
+a5 =coeff5 * (exp(1) .^ ((lambda5) .* x))';
+
+f = 1/(1+3.12)^6;
+error = []; % use empty array to store errors
+error = [error, f-a1, f-a2, f-a3, f-a4, f-a5];
+Errors = error';
+N = [3 5 9 17 33];
+N = N';
+T = table(N,Errors)
+
+T =
+
+  5×2 <a href="matlab:helpPopup table" style="font-weight:bold">table</a>
+
+    <strong>N</strong>          <strong>Errors</strong>      
+    <strong>__</strong>    <strong>_________________</strong>
+
+     3     -1.5075878570434
+     5    -2.42289601932669
+     9    -3.63548636770797
+    17    -6.47224123907471
+    33     -12.161200719412
+
+diary off
